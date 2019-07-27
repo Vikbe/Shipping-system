@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace UpsApi.Models
 {
-  
+    //Represents the JSON object received as respone when making a negotiated rate request
     public class ResponseStatus
     {
         public string Code { get; set; }
@@ -38,6 +38,10 @@ namespace UpsApi.Models
         public string MonetaryValue { get; set; }
     }
 
+    public class NegotiatedRateCharges
+    {
+        public TotalCharges TotalCharge { get; set; }
+    }
     public class ShipmentCharges
     {
         public TransportationCharges TransportationCharges { get; set; }
@@ -81,6 +85,7 @@ namespace UpsApi.Models
     public class ShipmentResults
     {
         public ShipmentCharges ShipmentCharges { get; set; }
+        public NegotiatedRateCharges NegotiatedRateCharges { get; set; }
         public BillingWeight BillingWeight { get; set; }
         public string ShipmentIdentificationNumber { get; set; }
         public PackageResults PackageResults { get; set; }

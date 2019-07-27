@@ -231,7 +231,7 @@ namespace UpsApi.Models
             ShipFrom = new ShipFrom();
             PaymentInformation = new PaymentInformation();
             Service = new Service();
-            //ShipmentRatingOptions = new ShipmentRatingOptions();
+            ShipmentRatingOptions = new ShipmentRatingOptions();
             Package = new Package();
         }
     }

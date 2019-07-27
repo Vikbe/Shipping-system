@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { TabContent, TabPane, Col, Row, Button, Form, FormGroup, Label, Input, FormText, Nav, NavItem, NavLink, } from 'reactstrap';
-import classnames from 'classnames';
+import { TabContent, TabPane, Col, Row, Button, Form, FormGroup, Label, Input, FormText, Nav, NavItem, NavLink, Spinner} from 'reactstrap';
+import classnames from 'classnames'; 
+import { InfoRow} from './InfoRow'
 
 export class NegotiatedRate extends Component {
   //static displayName = Counter.name;
@@ -9,7 +10,23 @@ export class NegotiatedRate extends Component {
     super(props);
       this.state = {
           activeTab: '1', 
-          FormData: {}
+          FormData: {
+              NameFrom: 'Frank Johnsson', 
+              AddressFrom: '4-60 Langille Dr',
+              CityFrom: 'Fredericton', 
+              StateFrom: 'NB', 
+              ZipFrom: 'E3C0M8', 
+              CountryFrom: 'CA', 
+              PhoneFrom: '1234567890', 
+              NameTo: 'Billy Johnsson',
+              AddressTo: '500 St. George St',
+              CityTo: 'Moncton',
+              StateTo: 'NB',
+              ZipTo: 'E1C1Y3',
+              CountryTo: 'CA',
+              PhoneTo: '1234567890'
+          }, 
+          fetching: false
       };
       this.toggle = this.toggle.bind(this); 
       this.handleChange = this.handleChange.bind(this);  
@@ -33,13 +50,21 @@ export class NegotiatedRate extends Component {
             fetching: true
         });
 
-        let resp = fetch('api/GetNegotiatedRates', {
+        fetch('api/GetNegotiatedRates', {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(this.state.FormData),
             cache: "no-store",
             credentials: "same-origin",
             method: "post"
-        });
+        }).then(response => response.json())
+            .then(json => this.setState({
+                activeTab: '4',
+                shipmentResults: json.shipmentResponse.shipmentResults,
+                fetching: false
+            }));
+
+
+
     }
 
    
@@ -77,6 +102,14 @@ export class NegotiatedRate extends Component {
                         onClick={() => { this.toggle('3'); }}
                     >
                         Package
+            </NavLink>
+                </NavItem> 
+                <NavItem>
+                    <NavLink
+                        className={classnames({ active: this.state.activeTab === '4' })}
+                        
+                    >
+                        Result
             </NavLink>
                 </NavItem>
             </Nav>
@@ -123,7 +156,7 @@ export class NegotiatedRate extends Component {
                             <Label for="PhoneFrom">Phone</Label>
                             <Input type="text" name="PhoneFrom" id="PhoneFrom" placeholder="" value={this.state.FormData.PhoneFrom} onChange={this.handleChange}/>
                         </FormGroup>
-                        <Button color="primary">Next</Button>
+                        <Button color="primary" onClick={() => { this.toggle('2'); }}>Next</Button>
                     </Form> 
                 </TabPane>
                 <TabPane tabId="2">
@@ -168,7 +201,7 @@ export class NegotiatedRate extends Component {
                             <Label for="PhoneTo">Phone</Label>
                             <Input type="text" name="PhoneTo" id="PhoneTo" placeholder="" value={this.state.FormData.PhoneTo} onChange={this.handleChange} />
                         </FormGroup>
-                        <Button color="primary">Next</Button>
+                        <Button color="primary" onClick={() => { this.toggle('3'); }}>Next</Button>
                     </Form> 
                 </TabPane> 
                 <TabPane tabId="3">
@@ -209,6 +242,22 @@ export class NegotiatedRate extends Component {
                         </FormGroup>
                         <Button color="primary" onClick={this.getRates}>Get rates</Button>
                     </Form> 
+                </TabPane> 
+                <TabPane tabId="4">
+                    <Form>
+                        {(this.state.fetching) ? 
+                            <Spinner type="grow" color="dark" />
+                            : (this.state.shipmentResults) ?
+                            <div>
+                                    <br/>
+                                    <InfoRow Title="Public rate" Value={this.state.shipmentResults.shipmentCharges.transportationCharges.monetaryValue + ' ' + this.state.shipmentResults.shipmentCharges.transportationCharges.currencyCode} /> 
+                                    <InfoRow Title="Negotiated rate" Value={this.state.shipmentResults.negotiatedRateCharges.totalCharge.monetaryValue + ' ' + this.state.shipmentResults.negotiatedRateCharges.totalCharge.currencyCode} />
+                                    <InfoRow Title="Shipment-ID" Value={this.state.shipmentResults.shipmentIdentificationNumber} />
+                            </div> 
+                                : null
+                        }
+                        
+                    </Form>
                 </TabPane>
             </TabContent>
 

@@ -28,13 +28,16 @@ namespace UpsApi.Controllers
         {
             var req = new NegotiatedRateRequest(_config.Value);
 
+            //This is all going to have less values hardcoded and should probably be moved somewhere else.
+
+
             //ShipmentRequest
             req.ShipmentRequest.Request.RequestOption = "validate";
             req.ShipmentRequest.Request.TransactionReference.CustomerContext = "Your Customer Context";
 
             //Shipment 
             req.ShipmentRequest.Shipment.Description = "Description";
-            //req.ShipmentRequest.Shipment.ShipmentRatingOptions.NegotiatedRatesIndicator = null;
+            req.ShipmentRequest.Shipment.ShipmentRatingOptions.NegotiatedRatesIndicator = "0";
 
             //Shipper
             req.ShipmentRequest.Shipment.Shipper.Name = form.NameFrom;
