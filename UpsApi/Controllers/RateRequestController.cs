@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using UpsApi.Models;
 using UpsApi.Services;
+using IronPdf;
 
 namespace UpsApi.Controllers
 {
@@ -14,11 +15,13 @@ namespace UpsApi.Controllers
     {
         private ApiService _apiService;
         private readonly IOptions<AuthenticationConfig> _config;
+        private readonly IOptions<PathConfig> _paths;
 
-        public RateRequestController(ApiService apiService, IOptions<AuthenticationConfig> config) : base()
+        public RateRequestController(ApiService apiService, IOptions<AuthenticationConfig> config, IOptions<PathConfig> paths) : base()
         {
             _apiService = apiService;
             _config = config;
+            _paths = paths;
 
         }
 
@@ -42,7 +45,7 @@ namespace UpsApi.Controllers
             //Shipper
             req.ShipmentRequest.Shipment.Shipper.Name = form.NameFrom;
             req.ShipmentRequest.Shipment.Shipper.AttentionName = form.NameFrom;
-            req.ShipmentRequest.Shipment.Shipper.TaxIdentificationNumber = "32132132";
+            req.ShipmentRequest.Shipment.Shipper.TaxIdentificationNumber = "718272719RM0001";
             req.ShipmentRequest.Shipment.Shipper.Phone.Number = form.PhoneFrom;
             req.ShipmentRequest.Shipment.Shipper.Phone.Extension = "1";
             req.ShipmentRequest.Shipment.Shipper.ShipperNumber = _config.Value.ShipperNumber;
@@ -108,9 +111,47 @@ namespace UpsApi.Controllers
 
             var res = await _apiService.MakeNegotiatedRateRequest(req);
 
+            CreateInvoiceForm(res, form);
+
             return Ok(res);
         }
 
+        [HttpGet]
+        [Route("api/invoice/pdf/{id}")]
+        public IActionResult GetInvoicePDF(string id)
+        {
+            return new PhysicalFileResult($"{_paths.Value.Forms}\\{id}.pdf", "application/pdf");
+        }
+
+
+        public void CreateInvoiceForm(NegotiatedRateResponse resp, RatesForm form)
+        {
+            var pdf = PdfDocument.FromFile($"{_paths.Value.Forms}\\InvoiceForm.pdf");
+            
+            pdf.Form.GetFieldByName("TaxID").Value = "718272719RM0001";
+
+            pdf.Form.GetFieldByName("FromContactName").Value = form.NameFrom;
+            pdf.Form.GetFieldByName("FromName").Value = form.NameFrom;
+            pdf.Form.GetFieldByName("FromAddress").Value = form.AddressFrom; 
+            pdf.Form.GetFieldByName("FromRestOfAddress").Value = $"{form.CityFrom}, {form.ZipFrom}, {form.StateFrom}";
+            pdf.Form.GetFieldByName("FromPhone").Value = form.PhoneFrom;
+
+            pdf.Form.GetFieldByName("WaybillNumber").Value = resp.ShipmentResponse.ShipmentResults.ShipmentIdentificationNumber;
+            pdf.Form.GetFieldByName("ShipmentID").Value = resp.ShipmentResponse.ShipmentResults.ShipmentIdentificationNumber;
+            pdf.Form.GetFieldByName("Date").Value = DateTime.Now.ToString("dd/MMM/yyyy");
+
+            pdf.Form.GetFieldByName("ShipToContactName").Value = form.NameTo;
+            pdf.Form.GetFieldByName("ShipToName").Value = form.NameTo;
+            pdf.Form.GetFieldByName("ShipToAddress").Value = form.AddressTo;
+            pdf.Form.GetFieldByName("ShipToRestOfAddress").Value = $"{form.CityTo}, {form.ZipTo}, {form.StateTo}";
+            pdf.Form.GetFieldByName("ShipToPhone").Value = form.PhoneTo;
+           
+            
+            var newPdf = pdf.SaveAs($"{_paths.Value.Forms}\\{resp.ShipmentResponse.ShipmentResults.ShipmentIdentificationNumber}.pdf");
+            newPdf.SecuritySettings.OwnerPassword = "poopfeast";
+            newPdf.SecuritySettings.MakePdfDocumentReadOnly("poopfeast"); 
+            //newPdf.SaveAs($"{_paths.Value.Forms}\\{resp.ShipmentResponse.ShipmentResults.ShipmentIdentificationNumber}.pdf");
+        }
 
     }
 }

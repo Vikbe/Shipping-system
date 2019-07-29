@@ -252,7 +252,9 @@ export class NegotiatedRate extends Component {
                                     <br/>
                                     <InfoRow Title="Public rate" Value={this.state.shipmentResults.shipmentCharges.transportationCharges.monetaryValue + ' ' + this.state.shipmentResults.shipmentCharges.transportationCharges.currencyCode} /> 
                                     <InfoRow Title="Negotiated rate" Value={this.state.shipmentResults.negotiatedRateCharges.totalCharge.monetaryValue + ' ' + this.state.shipmentResults.negotiatedRateCharges.totalCharge.currencyCode} />
-                                    <InfoRow Title="Shipment-ID" Value={this.state.shipmentResults.shipmentIdentificationNumber} />
+                                    <InfoRow Title="Shipment-ID" Value={this.state.shipmentResults.shipmentIdentificationNumber} /> 
+                                 <Button color="primary" href={"api/invoice/pdf/" + this.state.shipmentResults.shipmentIdentificationNumber}>View PDF invoice</Button>
+                                    
                             </div> 
                                 : null
                         }

@@ -11,5 +11,10 @@ namespace UpsApi.Models
         public string Password { get; set; }
         public string AccessLicenseNumber { get; set; }
         public string ShipperNumber { get; set; }
+    } 
+
+    public class PathConfig
+    {
+        public string Forms { get; set; }
     }
 }

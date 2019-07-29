@@ -32,10 +32,12 @@ namespace UpsApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<AuthenticationConfig>(Configuration.GetSection("Authentication"));
+            services.Configure<PathConfig>(Configuration.GetSection("Paths"));
 
-            
             services.AddHttpClient<ApiService>(client =>
             {
+                
+                //client.BaseAddress = new Uri("https://onlinetools.ups.com/rest/");
                 client.BaseAddress = new Uri("https://wwwcie.ups.com/rest/");
                 client.DefaultRequestHeaders.Add("User-Agent", "HttpClientFactory-Sample");
             }).ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler { UseDefaultCredentials = true });
