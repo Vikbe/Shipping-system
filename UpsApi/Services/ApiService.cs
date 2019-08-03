@@ -22,7 +22,36 @@ namespace UpsApi.Services
 
    
 
-        public async Task<NegotiatedRateResponse> MakeNegotiatedRateRequest(NegotiatedRateRequest req)
+        public async Task<RateResponse> MakeNegotiatedRateRequest(RatesRequest req)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+
+
+            var json = JsonConvert.SerializeObject(req);
+
+            var response = await _httpClient.PostAsync("Rate", new StringContent(json, Encoding.UTF8, "application/json"));
+
+            if (!response.IsSuccessStatusCode)
+            {
+
+              
+            }
+
+            var one = await response.Content.ReadAsStringAsync();
+
+            var responseData = JsonConvert.DeserializeObject<RootRatedResponse>(await response.Content.ReadAsStringAsync(), settings).RateResponse;
+
+
+            return responseData;
+
+        }
+
+
+        public async Task<ShipmentResponse> CreateShipmentRequest(NegotiatedRateRequest req)
         {
             var settings = new JsonSerializerSettings
             {
@@ -38,12 +67,12 @@ namespace UpsApi.Services
             if (!response.IsSuccessStatusCode)
             {
 
-              
+
             }
 
             var one = await response.Content.ReadAsStringAsync();
 
-            var responseData = JsonConvert.DeserializeObject<NegotiatedRateResponse>(await response.Content.ReadAsStringAsync(), settings);
+            var responseData = JsonConvert.DeserializeObject<RootShipmentResponse>(await response.Content.ReadAsStringAsync(), settings).ShipmentResponse;
 
 
             return responseData;

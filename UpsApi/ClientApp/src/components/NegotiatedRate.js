@@ -50,7 +50,7 @@ export class NegotiatedRate extends Component {
             fetching: true
         });
 
-        fetch('api/GetNegotiatedRates', {
+        fetch('api/CreateShipment', {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(this.state.FormData),
             cache: "no-store",
@@ -59,7 +59,7 @@ export class NegotiatedRate extends Component {
         }).then(response => response.json())
             .then(json => this.setState({
                 activeTab: '4',
-                shipmentResults: json.shipmentResponse.shipmentResults,
+                shipmentResults: json.shipmentResults,
                 fetching: false
             }));
 
