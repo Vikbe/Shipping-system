@@ -45,7 +45,7 @@ namespace UpsApi.Controllers
             //Shipper
             req.ShipmentRequest.Shipment.Shipper.Name = form.NameFrom;
             req.ShipmentRequest.Shipment.Shipper.AttentionName = form.NameFrom;
-            req.ShipmentRequest.Shipment.Shipper.TaxIdentificationNumber = "718272719RM0001";
+            req.ShipmentRequest.Shipment.Shipper.TaxIdentificationNumber = "faketaxcode";
             req.ShipmentRequest.Shipment.Shipper.Phone.Number = form.PhoneFrom;
             req.ShipmentRequest.Shipment.Shipper.Phone.Extension = "1";
             req.ShipmentRequest.Shipment.Shipper.ShipperNumber = _config.Value.ShipperNumber;
@@ -136,7 +136,7 @@ namespace UpsApi.Controllers
             //Shipper
             req.RateRequest.Shipment.Shipper.Name = form.NameFrom;
             req.RateRequest.Shipment.Shipper.AttentionName = form.NameFrom;
-            req.RateRequest.Shipment.Shipper.TaxIdentificationNumber = "718272719RM0001";
+            req.RateRequest.Shipment.Shipper.TaxIdentificationNumber = "faketaxcode";
             req.RateRequest.Shipment.Shipper.Phone.Number = form.PhoneFrom;
             req.RateRequest.Shipment.Shipper.Phone.Extension = "1";
             req.RateRequest.Shipment.Shipper.ShipperNumber = _config.Value.ShipperNumber;

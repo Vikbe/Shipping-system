@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using UpsApi.Models.Tradeability;
 
 namespace UpsApi.Services
 {
@@ -78,6 +79,35 @@ namespace UpsApi.Services
             return responseData;
 
         }
+
+        public async Task<RateResponse> MakeLandedCostRequest(SilicoLandedCostRequest req)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+
+
+            var json = JsonConvert.SerializeObject(req);
+
+            var response = await _httpClient.PostAsync("LandedCost", new StringContent(json, Encoding.UTF8, "application/json"));
+
+            if (!response.IsSuccessStatusCode)
+            {
+
+
+            }
+
+            var one = await response.Content.ReadAsStringAsync();
+
+            var responseData = JsonConvert.DeserializeObject<RootRatedResponse>(await response.Content.ReadAsStringAsync(), settings).RateResponse;
+
+
+            return responseData;
+
+        }
+
 
     }
 }

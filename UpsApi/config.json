@@ -1,10 +1,10 @@
 {
 
   "Authentication": {
-    "Username": "silicoinc",
-    "Password": "Kwedge1",
-    "AccessLicenseNumber": "ED659FA687A10E71",
-    "ShipperNumber": "63V2A1"
+    "Username": "user",
+    "Password": "hidden",
+    "AccessLicenseNumber": "***********************",
+    "ShipperNumber": "*****************************************************"
   },
   "Paths": {
     "Forms": "D:\\Silico\\UPS-master\\Forms"
