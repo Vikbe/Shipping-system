@@ -7,7 +7,7 @@ export class Home extends Component {
     return (
       <div>
         <h1>Hello, world!</h1>
-        <p>Suck your dick for a cheeseburger.</p>
+        <p>What's up!</p>
       
       </div>
     );
